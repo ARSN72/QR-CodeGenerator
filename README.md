@@ -1,5 +1,5 @@
 # QR-CodeGenerator
-<<<<<<< HEAD
+HEAD
 # QR Code Generator
 
 A fully customizable QR Code Generator web application built with vanilla HTML, CSS, and JavaScript. This application allows users to create, customize, and download QR codes with various features and styling options.
@@ -11,8 +11,8 @@ A fully customizable QR Code Generator web application built with vanilla HTML, 
 - Choose custom foreground and background colors
 - Add a center logo to your QR code
 - Two rendering modes:
-  - Canvas-based QR code with PNG download
-  - Animated SVG QR code using the `<qr-code>` Web Component
+- Canvas-based QR code with PNG download
+- Animated SVG QR code using the `<qr-code>` Web Component
 - Fully responsive design
 - No dependencies (except for QR code libraries)
 
@@ -58,9 +58,3 @@ This project is open source and available under the MIT License.
 
 Contributions are welcome! Please feel free to submit a Pull Request. 
 =======
-# QR-CodeGenerator
-<<<<<<< HEAD
-Simple CLI Based QR CodeGenerator Made Crafted in Python
->>>>>>> d27accca7db84bf4ba4c8c053cec67c7c0785ab8
-=======
->>>>>>> b035c20eaf15be1474316f0701920673d210224a
