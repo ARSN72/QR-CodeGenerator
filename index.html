@@ -15,132 +15,122 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body>
-    <header>
-        <div class="header-content">
+    <div class="app-container">
+        <header>
             <h1>QR Code Generator</h1>
-            <div class="project-links">
-                <p>Check out my other projects</p>
-                <div class="links">
-                    <a href="#" class="project-link" title="Project 1">
-                        <img src="https://via.placeholder.com/40" alt="Project 1">
-                    </a>
-                    <a href="#" class="project-link" title="Project 2">
-                        <img src="https://via.placeholder.com/40" alt="Project 2">
-                    </a>
-                    <a href="#" class="project-link" title="Project 3">
-                        <img src="https://via.placeholder.com/40" alt="Project 3">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+            <button id="theme-toggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
 
-    <main class="container">
-        <div class="app-content">
+        <main>
             <div class="mode-switch">
                 <button id="generate-mode" class="mode-btn active">Generate QR</button>
                 <button id="scan-mode" class="mode-btn">Scan QR</button>
             </div>
 
-            <div id="generate-section" class="generate-section">
-                <div class="config-panel">
-                    <div class="input-group">
-                        <label for="qr-text">Enter Text or URL:</label>
-                        <input type="text" id="qr-text" placeholder="Enter text or URL here...">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="error-correction">Error Correction:</label>
-                        <select id="error-correction">
-                            <option value="L">Low (7%)</option>
-                            <option value="M">Medium (15%)</option>
-                            <option value="Q">Quartile (25%)</option>
-                            <option value="H">High (30%)</option>
-                        </select>
-                    </div>
-
-                    <div class="color-controls">
-                        <div class="input-group">
-                            <label for="foreground-color">Foreground:</label>
-                            <input type="color" id="foreground-color" value="#000000">
-                        </div>
-                        <div class="input-group">
-                            <label for="background-color">Background:</label>
-                            <input type="color" id="background-color" value="#FFFFFF">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="logo-upload">Add Logo:</label>
-                        <input type="file" id="logo-upload" accept="image/*">
-                    </div>
-
-                    <div class="action-buttons">
-                        <button id="reset-btn" class="reset-btn">Reset</button>
-                        <button id="generate-btn" class="generate-btn">Generate QR</button>
-                    </div>
-                </div>
-
-                <div class="output-panel">
-                    <div id="canvas-output" class="qr-output">
+            <div id="generate-section" class="section">
+                <div class="qr-container">
+                    <div class="qr-output">
                         <canvas id="qr-canvas"></canvas>
-                        <button id="download-png" class="download-btn">Download PNG</button>
+                        <button id="download-png" class="action-btn">
+                            <i class="fas fa-download"></i> Download
+                        </button>
                     </div>
-                </div>
-            </div>
-
-            <div id="scan-section" class="scan-section hidden">
-                <div class="scan-options">
-                    <button id="camera-scan" class="scan-option-btn active">
-                        <i class="fas fa-camera"></i> Camera
-                    </button>
-                    <button id="upload-scan" class="scan-option-btn">
-                        <i class="fas fa-upload"></i> Upload
-                    </button>
-                </div>
-
-                <div id="camera-section">
-                    <div class="scanner-container">
-                        <video id="scanner-video" playsinline autoplay></video>
-                        <canvas id="scanner-canvas" class="hidden"></canvas>
-                        <div id="scanner-overlay">
-                            <div class="scanner-line"></div>
+                    <div class="qr-controls">
+                        <div class="input-group">
+                            <label for="qr-text">Text or URL</label>
+                            <input type="text" id="qr-text" placeholder="Enter text or URL...">
+                        </div>
+                        <div class="input-group">
+                            <label for="error-correction">Error Correction</label>
+                            <select id="error-correction">
+                                <option value="L">Low (7%)</option>
+                                <option value="M">Medium (15%)</option>
+                                <option value="Q">Quartile (25%)</option>
+                                <option value="H">High (30%)</option>
+                            </select>
+                        </div>
+                        <div class="color-controls">
+                            <div class="input-group">
+                                <label for="foreground-color">Foreground</label>
+                                <input type="color" id="foreground-color" value="#000000">
+                            </div>
+                            <div class="input-group">
+                                <label for="background-color">Background</label>
+                                <input type="color" id="background-color" value="#FFFFFF">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="logo-upload">Add Logo</label>
+                            <input type="file" id="logo-upload" accept="image/*">
+                        </div>
+                        <div class="action-buttons">
+                            <button id="reset-btn" class="action-btn">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                            <button id="generate-btn" class="action-btn primary">
+                                <i class="fas fa-qrcode"></i> Generate
+                            </button>
                         </div>
                     </div>
-                    <button id="stop-scan" class="stop-btn">Stop Scanning</button>
-                </div>
-
-                <div id="upload-section" class="hidden">
-                    <div class="upload-container">
-                        <input type="file" id="qr-upload" accept="image/*" class="hidden">
-                        <label for="qr-upload" class="upload-label">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Click to upload QR Code</span>
-                        </label>
-                        <div id="upload-preview" class="upload-preview"></div>
-                    </div>
-                </div>
-
-                <div id="scan-result" class="scan-result">
-                    <h3>Scanned Content</h3>
-                    <div id="scan-output"></div>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>Crafted by <a href="#" class="author-link">Arshan Mansuri</a></p>
+            <div id="scan-section" class="section hidden">
+                <div class="scan-container">
+                    <div class="scan-options">
+                        <button id="camera-scan" class="scan-option-btn active">
+                            <i class="fas fa-camera"></i> Camera
+                        </button>
+                        <button id="upload-scan" class="scan-option-btn">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                    </div>
+
+                    <div id="camera-section" class="scan-section">
+                        <div class="scanner-container">
+                            <video id="scanner-video" playsinline autoplay></video>
+                            <canvas id="scanner-canvas" class="hidden"></canvas>
+                            <div class="scanner-overlay">
+                                <div class="scanner-line"></div>
+                            </div>
+                        </div>
+                        <button id="stop-scan" class="action-btn">
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                    </div>
+
+                    <div id="upload-section" class="scan-section hidden">
+                        <div class="upload-container">
+                            <input type="file" id="qr-upload" accept="image/*" class="hidden">
+                            <label for="qr-upload" class="upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload QR Code</span>
+                            </label>
+                            <div id="upload-preview" class="upload-preview"></div>
+                        </div>
+                    </div>
+
+                    <div id="scan-result" class="scan-result">
+                        <h3>Scanned Content</h3>
+                        <div id="scan-output"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Created by <a href="#" class="author-link">Arshan Mansuri</a></p>
             <div class="social-links">
                 <a href="#" class="social-link"><i class="fab fa-github"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
+</html> 
 </html> 
