@@ -79,36 +79,38 @@
 
             <div id="scan-section" class="section hidden">
                 <div class="scan-container">
-                    <div class="scan-options">
-                        <button id="camera-scan" class="scan-option-btn active">
-                            <i class="fas fa-camera"></i> Camera
-                        </button>
-                        <button id="upload-scan" class="scan-option-btn">
-                            <i class="fas fa-upload"></i> Upload
-                        </button>
-                    </div>
-
-                    <div id="camera-section" class="scan-section">
-                        <div class="scanner-container">
-                            <video id="scanner-video" playsinline autoplay></video>
-                            <canvas id="scanner-canvas" class="hidden"></canvas>
-                            <div class="scanner-overlay">
-                                <div class="scanner-line"></div>
-                            </div>
+                    <div class="scan-panel">
+                        <div class="scan-options">
+                            <button id="camera-scan" class="scan-option-btn active">
+                                <i class="fas fa-camera"></i> Camera
+                            </button>
+                            <button id="upload-scan" class="scan-option-btn">
+                                <i class="fas fa-upload"></i> Upload
+                            </button>
                         </div>
-                        <button id="stop-scan" class="action-btn">
-                            <i class="fas fa-stop"></i> Stop
-                        </button>
-                    </div>
 
-                    <div id="upload-section" class="scan-section hidden">
-                        <div class="upload-container">
-                            <input type="file" id="qr-upload" accept="image/*" class="hidden">
-                            <label for="qr-upload" class="upload-label">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <span>Click to upload QR Code</span>
-                            </label>
-                            <div id="upload-preview" class="upload-preview"></div>
+                        <div id="camera-section" class="scan-section">
+                            <div class="scanner-container">
+                                <video id="scanner-video" playsinline autoplay></video>
+                                <canvas id="scanner-canvas" class="hidden"></canvas>
+                                <div class="scanner-overlay">
+                                    <div class="scanner-line"></div>
+                                </div>
+                            </div>
+                            <button id="stop-scan" class="action-btn">
+                                <i class="fas fa-stop"></i> Stop
+                            </button>
+                        </div>
+
+                        <div id="upload-section" class="scan-section hidden">
+                            <div class="upload-container">
+                                <input type="file" id="qr-upload" accept="image/*" class="hidden">
+                                <label for="qr-upload" class="upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Click to upload QR Code</span>
+                                </label>
+                                <div id="upload-preview" class="upload-preview"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -132,5 +134,4 @@
 
     <script src="script.js"></script>
 </body>
-</html> 
 </html> 

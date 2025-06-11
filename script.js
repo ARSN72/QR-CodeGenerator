@@ -180,8 +180,15 @@ uploadScan.addEventListener('click', () => {
 // Start camera scanning
 async function startScanning() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'environment',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } 
+        });
         scannerVideo.srcObject = stream;
+        await scannerVideo.play();
         scanning = true;
         scanFrame();
     } catch (err) {
@@ -205,19 +212,23 @@ function scanFrame() {
     const canvas = scannerCanvas;
     const context = canvas.getContext('2d');
     
-    canvas.width = scannerVideo.videoWidth;
-    canvas.height = scannerVideo.videoHeight;
-    context.drawImage(scannerVideo, 0, 0, canvas.width, canvas.height);
-    
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imageData.data, imageData.width, imageData.height);
-    
-    if (code) {
-        scanOutput.textContent = code.data;
-        stopScanning();
-    } else {
-        requestAnimationFrame(scanFrame);
+    if (scannerVideo.readyState === scannerVideo.HAVE_ENOUGH_DATA) {
+        canvas.width = scannerVideo.videoWidth;
+        canvas.height = scannerVideo.videoHeight;
+        context.drawImage(scannerVideo, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+        });
+        
+        if (code) {
+            scanOutput.textContent = code.data;
+            stopScanning();
+        }
     }
+    
+    requestAnimationFrame(scanFrame);
 }
 
 // Handle QR code upload
@@ -229,7 +240,9 @@ qrUpload.addEventListener('change', (e) => {
             const img = new Image();
             img.onload = () => {
                 uploadPreview.innerHTML = '';
-                uploadPreview.appendChild(img);
+                const previewImg = document.createElement('img');
+                previewImg.src = event.target.result;
+                uploadPreview.appendChild(previewImg);
                 
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
@@ -238,7 +251,9 @@ qrUpload.addEventListener('change', (e) => {
                 context.drawImage(img, 0, 0);
                 
                 const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
                 
                 if (code) {
                     scanOutput.textContent = code.data;
