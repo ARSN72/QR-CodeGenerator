@@ -183,8 +183,8 @@ async function startScanning() {
         const stream = await navigator.mediaDevices.getUserMedia({ 
             video: { 
                 facingMode: 'environment',
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
             } 
         });
         scannerVideo.srcObject = stream;
@@ -218,8 +218,16 @@ function scanFrame() {
         context.drawImage(scannerVideo, 0, 0, canvas.width, canvas.height);
         
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // Try different scanning options
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
-            inversionAttempts: "dontInvert",
+            inversionAttempts: "attemptBoth", // Try both normal and inverted
+            greyScaleWeights: {
+                red: 0.2126,
+                green: 0.7152,
+                blue: 0.0722,
+            },
+            canOverwriteImage: true,
         });
         
         if (code) {
@@ -244,21 +252,54 @@ qrUpload.addEventListener('change', (e) => {
                 previewImg.src = event.target.result;
                 uploadPreview.appendChild(previewImg);
                 
+                // Create a larger canvas for better quality
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
+                
+                // Set canvas size to match image dimensions
                 canvas.width = img.width;
                 canvas.height = img.height;
+                
+                // Draw image with better quality
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
                 context.drawImage(img, 0, 0);
                 
+                // Try to enhance the image for better scanning
                 const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                enhanceImage(imageData);
+                
+                // Try different scanning options
                 const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "dontInvert",
+                    inversionAttempts: "attemptBoth",
+                    greyScaleWeights: {
+                        red: 0.2126,
+                        green: 0.7152,
+                        blue: 0.0722,
+                    },
+                    canOverwriteImage: true,
                 });
                 
                 if (code) {
                     scanOutput.textContent = code.data;
                 } else {
-                    scanOutput.textContent = 'No QR code found in image';
+                    // If first attempt fails, try with image enhancement
+                    const enhancedData = enhanceImageForQR(imageData);
+                    const enhancedCode = jsQR(enhancedData.data, enhancedData.width, enhancedData.height, {
+                        inversionAttempts: "attemptBoth",
+                        greyScaleWeights: {
+                            red: 0.2126,
+                            green: 0.7152,
+                            blue: 0.0722,
+                        },
+                        canOverwriteImage: true,
+                    });
+                    
+                    if (enhancedCode) {
+                        scanOutput.textContent = enhancedCode.data;
+                    } else {
+                        scanOutput.textContent = 'No QR code found in image';
+                    }
                 }
             };
             img.src = event.target.result;
@@ -266,6 +307,54 @@ qrUpload.addEventListener('change', (e) => {
         reader.readAsDataURL(file);
     }
 });
+
+// Enhance image for better QR code detection
+function enhanceImage(imageData) {
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+    
+    // Convert to grayscale
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = data[i + 1] = data[i + 2] = avg;
+    }
+    
+    // Increase contrast
+    const factor = 1.5;
+    const intercept = 128 * (1 - factor);
+    
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = data[i] * factor + intercept;
+        data[i + 1] = data[i + 1] * factor + intercept;
+        data[i + 2] = data[i + 2] * factor + intercept;
+    }
+    
+    return imageData;
+}
+
+// Additional enhancement specifically for QR codes
+function enhanceImageForQR(imageData) {
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+    
+    // Create a new ImageData for the enhanced version
+    const enhancedData = new ImageData(width, height);
+    const enhanced = enhancedData.data;
+    
+    // Apply threshold
+    const threshold = 128;
+    
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        const value = avg > threshold ? 255 : 0;
+        enhanced[i] = enhanced[i + 1] = enhanced[i + 2] = value;
+        enhanced[i + 3] = data[i + 3];
+    }
+    
+    return enhancedData;
+}
 
 // Stop scan button
 stopScan.addEventListener('click', stopScanning);
