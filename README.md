@@ -58,5 +58,8 @@ This project is open source and available under the MIT License.
 Contributions are welcome! Please feel free to submit a Pull Request. 
 =======
 # QR-CodeGenerator
+<<<<<<< HEAD
 Simple CLI Based QR CodeGenerator Made Crafted in Python
 >>>>>>> d27accca7db84bf4ba4c8c053cec67c7c0785ab8
+=======
+>>>>>>> b035c20eaf15be1474316f0701920673d210224a
